@@ -15,10 +15,12 @@ class Database:
         table = [row.to_dict() for row in reference.where(field, "==", value).get()]
         return True if len(table) > 0 else False
 
-        
+    def create_id(self, collection):
+        return self.database.collection(collection).document().id
+
     def insert(self, collection, object):
         reference = self.database.collection(collection)
-        reference.document().set(object)
+        reference.document(object['id']).set(object)
 
         # check if register is done 
         return True if self.verify_register(collection, 'username', object['username']) else False        
@@ -29,19 +31,26 @@ class Database:
     def update(self, collection, register):
         '''
         '''
+
     def delete(self, collection, id):
-        '''
-        '''
+
+        # check if register is done 
+        if (self.verify_register(collection, 'id', id)):
+            print(self.database.collection(collection).document(id).delete())
+            
+            #check if register has deleted 
+            return False if self.verify_register(collection, 'id', id) else True   
+
+        else:
+            return False
 
 import firebase_admin
 from firebase_admin import firestore
 from model.user import User  
 if __name__ == '__main__':
     db = Database(firebase_admin, firestore)
-    print(db.verify_register('users', 'username', 'luise'))
-
-    user = User("luisedu", "Luis Eduardo", "luiseduardogfranca@gmail.com")
-    print(db.insert("users", user.get_user()))
-
-    
-    
+    # print(db.verify_register('users', 'username', 'luise'))
+    id = db.create_id('users')
+    user = User(id, "luisedu", "Luis Eduardo", "luiseduardogfranca@gmail.com")
+    print(user.to_dict())
+    print(db.insert("users", user.to_dict()))
