@@ -14,7 +14,7 @@ class Task:
         self.id_list = id_list 
         self.status = self.STATUS_OPEN
 
-    def get_task(self):
+    def to_dict(self):
         if (self.id != None and self.title != None and self.date != None and self.id_list != None and self.status != None):
             return {'id':self.id, 'title':self. title, 'description': self.description, 'date': self.date, 'status':self.status, 'id_list': self.id_list}
         else:
@@ -26,4 +26,4 @@ class Task:
 # test 
 if __name__ == '__main__':
     t = Task(1, "Comprar leite", "Vá e compre leite, ué!", "12/10/2018")
-    print(t.get_task())
+    print(t.to_dict())
