@@ -25,12 +25,22 @@ class Database:
         # check if register is done 
         return True if self.verify_register(collection, 'username', object['username']) else False        
 
-    def read(self, collection, id):
-        '''
-        '''
-    def update(self, collection, register):
-        '''
-        '''
+    def read(self, collection, field, value):
+        reference = self.database.collection(collection)
+        objects = [row.to_dict() for row in reference.where(field, "==", value).get()]
+        return objects
+
+    def update(self, collection, id, object):
+        reference = self.database.collection(collection)
+
+        # update 
+        if self.verify_register(collection, 'id', id):
+
+            reference.document(id).update(object)
+            return True 
+
+        else:
+            return False 
 
     def delete(self, collection, id):
 
@@ -47,10 +57,16 @@ class Database:
 import firebase_admin
 from firebase_admin import firestore
 from model.user import User  
+import datetime 
 if __name__ == '__main__':
     db = Database(firebase_admin, firestore)
     # print(db.verify_register('users', 'username', 'luise'))
     id = db.create_id('users')
-    user = User(id, "luisedu", "Luis Eduardo", "luiseduardogfranca@gmail.com")
+    date = datetime.datetime.utcnow()
+    user = User(id, "edugf", "MASSA", "luiseduardogfranca@gmail.com", datetime)
     print(user.to_dict())
     print(db.insert("users", user.to_dict()))
+    a = db.read('users', 'username', 'edugf')[0]
+    print(a)
+    # db.update('users','ISHxp2DSX1bU1LqED7HW',{'name':'Luís Eduardo'})
+    # db.insert('users', a)
