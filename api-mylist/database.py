@@ -35,7 +35,6 @@ class Database:
 
         # update 
         if self.verify_register(collection, 'id', id):
-
             reference.document(id).update(object)
             return True 
 

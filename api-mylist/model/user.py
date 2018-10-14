@@ -7,7 +7,7 @@ class User:
         self.name = name 
         self.email = email 
         self.username = username
-        self.date_creation = date_creation.datetime.utcnow()
+        self.date_creation = date_creation
         
     def to_dict(self):
         if (self.username != None and self.name != None and self.email != None and self.date_creation != None):

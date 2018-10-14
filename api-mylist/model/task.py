@@ -10,7 +10,7 @@ class Task:
         self.id = self.create_id()
         self.title = title 
         self.description = description
-        self.date = date.datetime.utcnow()
+        self.date = date
         self.id_list = id_list 
         self.status = self.STATUS_OPEN
 

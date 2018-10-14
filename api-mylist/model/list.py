@@ -5,7 +5,7 @@ class List:
     def __init__(self, id, id_user, title, date):
         self.id = id
         self.title = title 
-        self.date = date.datetime.utcnow()
+        self.date = date
         self.link = self.create_link()
         self.id_user = id_user 
 
