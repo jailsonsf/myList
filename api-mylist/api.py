@@ -139,6 +139,29 @@ def create_list():
                return jsonify(error(203, 'Not Allowed'))
     else:
         return jsonify(error(405, 'Method has to be POST'))
+@app.route('/lists/delete/<id_list>', methods=['DELETE'])
+def delete_list(id_list):
+    if request.method == 'DELETE':
+        
+        # query for check list 
+        query_db = db.read('lists', 'id', id_list)
+        list_user = query_db[0] if len(query_db) == 1 else None 
+        if (list_user == None):
+            return jsonify(error(404, 'List not exists'))
+        
+        else:
+            if (db.delete('lists', id_list)):
+                
+                # TODO - remove tasks too 
+
+                return jsonify(error(200, "Removed"))
+
+            else:
+                return jsonify(error(400, "Not removed"))
+
+    else:
+        return jsonify(error(405, 'Method has to be DELETE'))        
+
 
 @app.route('/tasks/<id_task>', methods=['GET'])
 def get_task(id_task):
@@ -173,6 +196,28 @@ def create_task():
                return jsonify(error(203, 'Not Allowed'))
     else:
         return jsonify(error(405, 'Method has to be POST'))
+
+@app.route('/tasks/delete/<id_task>', methods=['DELETE'])
+def delete_task(id_task):
+    if request.method == 'DELETE':
+        
+        # query for check task 
+        query_db = db.read('tasks', 'id', id_task)
+        task = query_db[0] if len(query_db) == 1 else None 
+        if (task == None):
+            return jsonify(error(404, 'Task not exists'))
+        
+        else:
+            if (db.delete('tasks', id_task)):
+
+                return jsonify(error(200, "Removed"))
+
+            else:
+                return jsonify(error(400, "Not removed"))
+
+    else:
+        return jsonify(error(405, 'Method has to be DELETE'))        
+
 
 if __name__ == '__main__':
     port = os.environ.get('PORT', 5000)
