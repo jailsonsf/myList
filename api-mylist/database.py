@@ -44,7 +44,7 @@ class Database:
 
         # check if register is done 
         if (self.verify_register(collection, 'id', id)):
-            print(self.database.collection(collection).document(id).delete())
+            self.database.collection(collection).document(id).delete()
             
             #check if register has deleted 
             return False if self.verify_register(collection, 'id', id) else True   
