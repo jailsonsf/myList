@@ -2,7 +2,7 @@
 
 Aplicação para criar e gerenciar listas de tarefa
 ## Sobre
-O myList é um aplicativo feito no Ionic para faciliar suas listas de tarefas. Escrever uma é uma das maneiras mais úteis para lembrar e priorizar seus afazeres num dia, semana ou até mesmo no mês. É fácil se perder entre as tarefas, subitens e lembretes de todas as mil coisas que fazemos durante o dia. Um dos maiores erros em meio a correria é não se concentrar em prioridades. Assim, não faça uma lista de itens gigantesca que não serão cumpridos.
+O myList é um aplicativo feito no Ionic para facilitar suas listas de tarefas. Escrever uma é uma das maneiras mais úteis para lembrar e priorizar seus afazeres num dia, semana ou até mesmo no mês. É fácil se perder entre as tarefas, sub-itens e lembretes de todas as mil coisas que fazemos durante o dia. Um dos maiores erros em meio a correria é não se concentrar em prioridades. Assim, não faça uma lista de itens gigantesca que não serão cumpridos.
 ### O que é o Ionic?
 
 ![Ionic](https://ionicframework.com/img/getting-started/creator-devices.png)
@@ -23,6 +23,6 @@ Ele nada mais é do que uma pilha de componentes e outros frameworks. Estes comp
 
 [Jailson Soares](https://github.com/jailsonsf)
 
-[Luis Eduardo](https://github.com/luiseduardogfranca)
+[Luís Eduardo](https://github.com/luiseduardogfranca)
 
 [Roque Barbosa](https://github.com/Trucopa)
