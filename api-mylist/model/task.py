@@ -6,8 +6,8 @@ class Task:
     STATUS_OPEN = "open"
     STATUS_CLOSED = "closed"
 
-    def __init__(self, id_list, title, description, date):
-        self.id = self.create_id()
+    def __init__(self, id, id_list, title, description, date):
+        self.id = id
         self.title = title 
         self.description = description
         self.date = date
@@ -20,8 +20,6 @@ class Task:
         else:
             raise Exception(self.NOT_EXIST_LIST)
     
-    def create_id(self):
-        return 1
 
 # test 
 if __name__ == '__main__':
