@@ -1,6 +1,5 @@
 class Database:
     
-    
     def __init__(self, firebase_admin, firestore):
         self.firebase_admin = firebase_admin
         self.firestore = firestore
@@ -23,7 +22,7 @@ class Database:
         reference.document(object['id']).set(object)
 
         # check if register is done 
-        return True if self.verify_register(collection, 'username', object['username']) else False        
+        return True if self.verify_register(collection, 'id', object['id']) else False        
 
     def read(self, collection, field, value):
         reference = self.database.collection(collection)
@@ -45,7 +44,7 @@ class Database:
 
         # check if register is done 
         if (self.verify_register(collection, 'id', id)):
-            print(self.database.collection(collection).document(id).delete())
+            self.database.collection(collection).document(id).delete()
             
             #check if register has deleted 
             return False if self.verify_register(collection, 'id', id) else True   
