@@ -6,6 +6,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding text-center>
+<ion-content padding>
   As listam ficam aqui.
+
+  <!-- <ion-item>
+    <ion-input required type="text" placeholder="1° item"></ion-input>
+    <ion-button shape="round" color="secondary" fill="outline">Add</ion-button>
+  </ion-item> -->
+  
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+
+    <ion-fab-button (click)="newList()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+
+  </ion-fab>
+
 </ion-content>
