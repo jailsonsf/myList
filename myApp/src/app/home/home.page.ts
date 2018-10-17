@@ -6,4 +6,13 @@ import { NavController, NavParams } from '@ionic/angular';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
-export class HomePage {}
+
+export class HomePage {
+
+  newList() {
+
+    alert("this is ok!");
+
+  }
+
+}
