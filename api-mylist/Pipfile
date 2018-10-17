@@ -4,8 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+google-cloud-firestore="*"
+firebase-admin="*"
+flask="*"
 
 [dev-packages]
+black="*"
 
 [requires]
 python_version = "3.6"
