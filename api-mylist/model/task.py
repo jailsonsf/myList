@@ -6,13 +6,14 @@ class Task:
     STATUS_OPEN = "open"
     STATUS_CLOSED = "closed"
 
-    def __init__(self, id, id_list, title, description, date):
+    def __init__(self, id, id_list, title, description, date, status):
         self.id = id
         self.title = title 
         self.description = description
         self.date = date
         self.id_list = id_list 
-        self.status = self.STATUS_OPEN
+        self.status = status.lower() if (status.lower() == self.STATUS_OPEN or status.lower() == self.STATUS_CLOSED) else self.STATUS_OPEN
+        print(self.status)
 
     def to_dict(self):
         if (self.id != None and self.title != None and self.date != None and self.id_list != None and self.status != None):
