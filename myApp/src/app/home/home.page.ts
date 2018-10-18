@@ -11,7 +11,7 @@ export class HomePage {
 
   newList() {
 
-    alert("this is ok!");
+    console.log("this is ok!");
 
   }
 
