@@ -9,7 +9,7 @@ class Database:
         self.firebase_admin = firebase_admin
         self.firestore = firestore
 
-        cred = self.firebase_admin.credentials.Certificate('./hello-world-7d62a-firebase-adminsdk-w5pyr-0c74f236dc.json')
+        cred = self.firebase_admin.credentials.Certificate('./mylist-bfcc8-firebase-adminsdk-clp01-56982f095d.json')
         self.firebase_admin.initialize_app(cred)
 
         self.database = self.firestore.client()
