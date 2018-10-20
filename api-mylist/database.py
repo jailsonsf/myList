@@ -1,10 +1,15 @@
+import firebase_admin
+from firebase_admin import firestore
+from model.user import User  
+import datetime
+
 class Database:
     
     def __init__(self, firebase_admin, firestore):
         self.firebase_admin = firebase_admin
         self.firestore = firestore
 
-        cred = self.firebase_admin.credentials.Certificate('./mylist-bfcc8-firebase-adminsdk-clp01-56982f095d.json')
+        cred = self.firebase_admin.credentials.Certificate('./hello-world-7d62a-firebase-adminsdk-w5pyr-0c74f236dc.json')
         self.firebase_admin.initialize_app(cred)
 
         self.database = self.firestore.client()
@@ -52,19 +57,12 @@ class Database:
         else:
             return False
 
-import firebase_admin
-from firebase_admin import firestore
-from model.user import User  
-import datetime 
-if __name__ == '__main__':
+
+if __name__ != '__main__':
     db = Database(firebase_admin, firestore)
-    # print(db.verify_register('users', 'username', 'luise'))
     id = db.create_id('users')
-    date = datetime.datetime.utcnow()
+    print(id)
+    date = datetime.datetime.now()
+    print(date)
     user = User(id, "edugf", "MASSA", "luiseduardogfranca@gmail.com", datetime)
-    print(user.to_dict())
-    print(db.insert("users", user.to_dict()))
-    a = db.read('users', 'username', 'edugf')[0]
-    print(a)
-    # db.update('users','ISHxp2DSX1bU1LqED7HW',{'name':'Luís Eduardo'})
-    # db.insert('users', a)
+    db.insert("users", user.to_dict())
