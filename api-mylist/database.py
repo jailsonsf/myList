@@ -59,12 +59,10 @@ class Database:
         else:
             return False
 
+db = Database(firebase_admin, firestore)
 
-if __name__ != "__main__":
-    db = Database(firebase_admin, firestore)
+if __name__ == "__main__":
     id = db.create_id("users")
-    print(id)
     date = datetime.datetime.now()
-    print(date)
-    user = User(id, "edugf", "MASSA", "luiseduardogfranca@gmail.com", datetime)
+    user = User(id, "edugf", "MASSA", "luiseduardogfranca@gmail.com", datetime.__str__())
     db.insert("users", user.to_dict())
