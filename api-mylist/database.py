@@ -10,7 +10,7 @@ class Database:
         self.firestore = firestore
 
         cred = self.firebase_admin.credentials.Certificate(
-            "./mylist-bfcc8-firebase-adminsdk-clp01-56982f095d.json"
+            "./hello-world-7d62a-firebase-adminsdk-w5pyr-0c74f236dc.json"
         )
         self.firebase_admin.initialize_app(cred)
 
@@ -63,6 +63,6 @@ db = Database(firebase_admin, firestore)
 
 if __name__ == "__main__":
     id = db.create_id("users")
-    date = datetime.datetime.now()
-    user = User(id, "edugf", "MASSA", "luiseduardogfranca@gmail.com", datetime.__str__())
+    date_creation = datetime.datetime.utcnow()
+    user = User(id, "edugf", "MASSA", "luiseduardogfranca@gmail.com", date_creation)
     db.insert("users", user.to_dict())
