@@ -1,2 +1,2 @@
 def error(code, description):
-    return {'code': code, 'description': description}
+    return {"code": code, "description": description}

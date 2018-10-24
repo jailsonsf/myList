@@ -1,272 +1,86 @@
-'''
+"""
     API RestFul
     Start at 12/10/2018 10:58 
-'''
-from flask import Flask, jsonify, request, abort 
-from firebase_admin import firestore 
-from error_handler import error
-from database import Database
-import firebase_admin 
-import datetime 
+"""
 import os
 
-# import model 
-from model.user import User 
-from model.list import List 
-from model.task import Task 
+from flask import Flask, jsonify, request, abort
 
-# initialize Flask 
+from controller import user_controller, list_controller, task_controller
+
+# initialize Flask
 app = Flask(__name__)
 
-# initialize database 
-db = Database(firebase_admin, firestore)
+# routes user
+app.add_url_rule(
+    "/users/<username>",
+    view_func=user_controller.get_user,
+    methods=["GET", "UPDATE", "DELETE"],
+)
 
-# routes user 
-@app.route('/users/<usarname>', methods=['GET', 'UPDATE', 'DELETE'])
-def get_user(usarname):
-    return jsonify(db.read('users', 'username', usarname))
-    
-@app.route('/users', methods=['POST'])
-def create_user():
-    json = request.get_json()
+app.add_url_rule("/users/", view_func=user_controller.create_user, methods=["POST"])
 
-    id = db.create_id('users')
-    username = json['username']
-    name = json['name']
-    email = json['email']
+app.add_url_rule(
+    "/users/<id_user>", view_func=user_controller.update_user, methods=["POST"]
+)
 
-    if (db.verify_register('users', 'username', username)):
-        return jsonify(error(400, 'Username already exists'))
-    else:
-        # create instance 
-        user = User(id, username, name, email, datetime.datetime.utcnow())
+app.add_url_rule(
+    "/users/delete/<id_user>", view_func=user_controller.delete_user, methods=["DELETE"]
+)
 
-        # insert into database 
-        if(db.insert('users', user.to_dict())):
-            return jsonify(user.to_dict())
-        else:
-            return jsonify(error(203, 'Not Allowed'))
+app.add_url_rule(
+    "/users/lists/<id_user>",
+    view_func=user_controller.get_lists_by_user,
+    methods=["GET"],
+)
 
-@app.route('/users/<id_user>', methods=['POST'])
-def update_user(id_user):
-    if request.method == 'POST':
-        # query for check username 
-        query_db = db.read('users', 'id', id_user)
-        user = query_db[0] if len(query_db) == 1 else None 
-        if(user == None):
-            return jsonify(error(404, 'User not exists'))
-        
-        else:
-            json = request.get_json()
+# routes list
+app.add_url_rule(
+    "/users/lists/<id_user>",
+    view_func=list_controller.get_lists_by_user,
+    methods=["GET"],
+)
 
-            username = json['username']
-            name = json['name']
-            email = json['email']
-            date = user['date_creation']
-
-            if (user['username'] != username and db.verify_register('users', 'username', username)):
-                return jsonify(error(400, 'User invalid or user already exists'))
-
-            else:
-                user = User(id_user, username, name, email, date)
-                
-                if(db.update('users', id_user, user.to_dict())):
-                    return jsonify(user.to_dict())
-                
-                else:
-                    return jsonify(error(203, 'Not Allowed'))
-
-@app.route('/users/delete/<id_user>', methods=['DELETE'])
-def delete_user(id_user):
-    if request.method == 'DELETE':
-        # query for check username 
-        query_db = db.read('users', 'id', id_user)
-        user = query_db[0] if len(query_db) == 1 else None 
-        print("ola")
-        if (user == None):
-            return jsonify(error(404, 'User not exists'))
-        
-        else:
-
-            if (db.delete('users', id_user)):
-                
-                # delete all lists
-                lists = db.read('lists', 'id_user', id_user)
-
-                if (len(lists) > 0):
-                    for list_user in lists:
-                        print(list_user['id'])
-                        db.delete('lists', list_user['id'])
-
-                return jsonify(error(200, "Removed"))
-
-            else:
-                return jsonify(error(400, "Not removed")) 
-    
-
-# routes list 
-@app.route('/users/lists/<id_user>', methods=['GET'])
-def get_lists_by_user(id_user):
-    return jsonify(db.read('lists', 'id_user', id_user))
-
-@app.route('/lists/<id_list>', methods=['GET'])
-def get_list(id_list):
-    return jsonify(db.read('lists', 'id', id_list))
-
-@app.route('/lists', methods=['POST'])
-def create_list():
-    json = request.get_json()
-
-    id = db.create_id('lists')
-    title = json['title']
-    id_user = json['id_user']
-
-    if (not db.verify_register('users', 'id', id_user)):
-        return jsonify(error(400, 'User not exists'))
-    elif (db.verify_register('lists', 'id', id)):
-        return jsonify(error(400, 'List already exists'))
-    else:
-        # create instance 
-        list_user = List(id, id_user, title, datetime.datetime.utcnow())
-
-        # insert into database 
-        if(db.insert('lists', list_user.to_dict())):
-            return jsonify(list_user.to_dict())
-        else:
-            return jsonify(error(203, 'Not Allowed'))
-
-@app.route('/lists/<id_list>', methods=['POST'])
-def update_list(id_list):
-    if request.method == 'POST':
-        # query for check username 
-        query_db = db.read('lists', 'id', id_list)
-        list_user = query_db[0] if len(query_db) == 1 else None 
-        if(list_user == None):
-            return jsonify(error(404, 'List not exists'))
-        
-        else:
-            json = request.get_json()
-
-            id = list_user['id']
-            title = json['title']
-            date = list_user['date']
-            id_user = list_user['id_user']
-            link = list_user["link"]
-            
-            list_user = List(id, id_user, title, date)
-
-            if(db.update('lists', id_list, list_user.to_dict())):
-                return jsonify(list_user.to_dict())
-            
-            else:
-                return jsonify(error(203, 'Not Allowed'))
-    
-@app.route('/lists/delete/<id_list>', methods=['DELETE'])
-def delete_list(id_list):
-    if request.method == 'DELETE':
-        # query for check list 
-        query_db = db.read('lists', 'id', id_list)
-        list_user = query_db[0] if len(query_db) == 1 else None 
-        if (list_user == None):
-            return jsonify(error(404, 'List not exists'))
-        
-        else:
-            if (db.delete('lists', id_list)):
-                
-                # delete all tasks 
-                tasks = db.read('tasks', 'id_list', id_list)
-                if (len(tasks) > 0):
-                    for task in tasks:
-                        db.delete('tasks', task['id'])
-
-                return jsonify(error(200, "Removed"))
-
-            else:
-                return jsonify(error(400, "Not removed"))
-
-  
-# routes task 
-@app.route('/tasks/<id_task>', methods=['GET'])
-def get_task(id_task):
-    return jsonify(db.read('tasks', 'id', id_task))
-
-@app.route('/lists/tasks/<id_list>', methods=['GET'])
-def get_tasks_by_list(id_list):
-    return jsonify(db.read('tasks', 'id_list', id_list))
-
-@app.route('/tasks', methods=['POST'])
-def create_task():
-    json = request.get_json()
-
-    id = db.create_id('tasks')
-    title = json['title']
-    description = json['description']
-    id_list = json['id_list']
-
-    if (not db.verify_register('lists', 'id', id_list)):
-            return jsonify(error(400, 'List not exists'))
-    elif (db.verify_register('tasks', 'id', id)):
-        return jsonify(error(400, 'Task already exists'))
-    else:
-        # create instance 
-        task = Task(id, id_list, title, description, datetime.datetime.utcnow())
-
-        # insert into database 
-        if(db.insert('tasks', task.to_dict())):
-            return jsonify(task.to_dict())
-        else:
-            return jsonify(error(203, 'Not Allowed'))
-
-@app.route('/tasks/<id_task>', methods=['POST'])
-def update_task(id_task):
-
-    if request.method == 'POST':
-
-        # query for check id task 
-        query_db = db.read('tasks', 'id', id_task)
-        task = query_db[0] if len(query_db) == 1 else None 
-        if(task == None):
-            return jsonify(error(404, 'Task not exists'))
-        
-        else:
-            json = request.get_json()
-            
-            id = task['id']
-            title = json['title']
-            description = json['description']
-            date = task['date']
-            id_list = task['id_list']
-            status = json["status"]
-            
-            task = Task(id=id, id_list=id_list,  title=title, description=description, date=date, status=status)
-
-            if(db.update('tasks', id_task, task.to_dict())):
-                return jsonify(task.to_dict())
-            
-            else:
-                return jsonify(error(203, 'Not Allowed'))
-
-@app.route('/tasks/delete/<id_task>', methods=['DELETE'])
-def delete_task(id_task):
-    if request.method == 'DELETE':
-        # query for check task 
-        query_db = db.read('tasks', 'id', id_task)
-        task = query_db[0] if len(query_db) == 1 else None 
-        if (task == None):
-            return jsonify(error(404, 'Task not exists'))
-        
-        else:
-            if (db.delete('tasks', id_task)):
-
-                return jsonify(error(200, "Removed"))
-
-            else:
-                return jsonify(error(400, "Not removed"))
-
-if __name__ == '__main__':
-    port = os.environ.get('PORT', 5000)
-    app.run(host='127.0.0.1', port=port)
-        
+app.add_url_rule(
+    "/lists/<id_list>", view_func=list_controller.get_list, methods=["GET"]
+)
 
 
+app.add_url_rule("/lists", view_func=list_controller.create_list, methods=["POST"])
 
+
+app.add_url_rule(
+    "/lists/<id_list>", view_func=list_controller.update_list, methods=["POST"]
+)
+
+
+app.add_url_rule(
+    "/lists/delete/<id_list>", view_func=list_controller.delete_list, methods=["DELETE"]
+)
+
+# routes task
+app.add_url_rule(
+    "/tasks/<id_task>", view_func=task_controller.get_task, methods=["GET"]
+)
+
+app.add_url_rule(
+    "/lists/tasks/<id_list>",
+    view_func=task_controller.get_tasks_by_list,
+    methods=["GET"],
+)
+
+app.add_url_rule("/tasks", view_func=task_controller.create_task, methods=["POST"])
+
+
+app.add_url_rule(
+    "/tasks/<id_task>", view_func=task_controller.update_task, methods=["POST"]
+)
+
+
+app.add_url_rule(
+    "/tasks/delete/<id_task>", view_func=task_controller.delete_task, methods=["DELETE"]
+)
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
